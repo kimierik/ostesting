@@ -13,20 +13,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    //    const entry = b.addAssembly(.{ .name = "ostest", .source_file = b.path("src/boot.s"), .target = b.resolveTargetQuery(target), .optimize = optimize, });
-
     kmain.addAssemblyFile(b.path("src/boot.s"));
     kmain.setLinkerScript(b.path("src/linker.ld"));
     b.installArtifact(kmain);
-
-    const run_cmd = b.addRunArtifact(kmain);
-
-    run_cmd.step.dependOn(b.getInstallStep());
-
-    if (b.args) |args| {
-        run_cmd.addArgs(args);
-    }
-
-    const run_step = b.step("run", "Run the app");
-    run_step.dependOn(&run_cmd.step);
 }
